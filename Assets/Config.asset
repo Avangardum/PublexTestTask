@@ -13,3 +13,5 @@ MonoBehaviour:
   m_Name: Config
   m_EditorClassIdentifier: 
   <PlayerSpeed>k__BackingField: 5
+  <CameraInterpolationSpeed>k__BackingField: 0.05
+  <CameraOffset>k__BackingField: {x: 0, y: 7, z: -3}

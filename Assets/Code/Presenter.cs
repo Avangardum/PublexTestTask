@@ -10,6 +10,7 @@ namespace Avangardum.PublexTestTask
             public IPlayerModel PlayerModel;
             public ILevelLoader LevelLoader;
             public IInputManager InputManager;
+            public ICameraManager CameraManager;
         }
 
         private Dependencies _dependencies;
@@ -30,6 +31,7 @@ namespace Avangardum.PublexTestTask
         private void OnLevelLoaded(object sender, EventArgs e)
         {
             _dependencies.PlayerModel.OnLevelLoaded();
+            _dependencies.CameraManager.OnLevelLoaded();
         }
     }
 }

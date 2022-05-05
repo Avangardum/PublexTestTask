@@ -15,12 +15,15 @@ namespace Avangardum.PublexTestTask
             playerModel.Initialise(_config, _updateProvider);
             IInputManager inputManager = new InputManager();
             inputManager.Initialize(_updateProvider);
+            ICameraManager cameraManager = new CameraManager();
+            cameraManager.Initialize(_updateProvider, _config);
 
             Presenter presenter = new Presenter(new Presenter.Dependencies
             {
                 LevelLoader = levelLoader,
                 PlayerModel = playerModel,
                 InputManager = inputManager,
+                CameraManager = cameraManager,
             });
             
             levelLoader.LoadLevel("Level 1");
