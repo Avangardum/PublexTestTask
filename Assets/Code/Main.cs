@@ -17,6 +17,7 @@ namespace Avangardum.PublexTestTask
             inputManager.Initialize(_updateProvider);
             ICameraManager cameraManager = new CameraManager();
             cameraManager.Initialize(_updateProvider, _config);
+            IFloorButtonsAndDoorsManager floorButtonsAndDoorsManager = new FloorButtonsAndDoorsManager();
 
             Presenter presenter = new Presenter(new Presenter.Dependencies
             {
@@ -24,6 +25,7 @@ namespace Avangardum.PublexTestTask
                 PlayerModel = playerModel,
                 InputManager = inputManager,
                 CameraManager = cameraManager,
+                FloorButtonsAndDoorsManager = floorButtonsAndDoorsManager,
             });
             
             levelLoader.LoadLevel("Level 1");
