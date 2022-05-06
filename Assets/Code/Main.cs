@@ -18,6 +18,8 @@ namespace Avangardum.PublexTestTask
             ICameraManager cameraManager = new CameraManager();
             cameraManager.Initialize(_updateProvider, _config);
             IFloorButtonsAndDoorsManager floorButtonsAndDoorsManager = new FloorButtonsAndDoorsManager();
+            INPCManager npcManager = new NpcManager();
+            npcManager.Initialize(_updateProvider, _config);
 
             Presenter presenter = new Presenter(new Presenter.Dependencies
             {
@@ -26,6 +28,7 @@ namespace Avangardum.PublexTestTask
                 InputManager = inputManager,
                 CameraManager = cameraManager,
                 FloorButtonsAndDoorsManager = floorButtonsAndDoorsManager,
+                NpcManager = npcManager,
             });
             
             levelLoader.LoadLevel("Level 1");

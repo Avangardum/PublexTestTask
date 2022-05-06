@@ -12,6 +12,7 @@ namespace Avangardum.PublexTestTask
             public IInputManager InputManager;
             public ICameraManager CameraManager;
             public IFloorButtonsAndDoorsManager FloorButtonsAndDoorsManager;
+            public INPCManager NpcManager;
         }
 
         private Dependencies _dependencies;
@@ -34,6 +35,7 @@ namespace Avangardum.PublexTestTask
             _dependencies.PlayerModel.OnLevelLoaded();
             _dependencies.CameraManager.OnLevelLoaded();
             _dependencies.FloorButtonsAndDoorsManager.OnLevelLoaded();
+            _dependencies.NpcManager.OnLevelLoaded();
         }
     }
 }

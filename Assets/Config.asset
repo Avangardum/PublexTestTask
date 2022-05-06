@@ -15,3 +15,6 @@ MonoBehaviour:
   <PlayerSpeed>k__BackingField: 5
   <CameraInterpolationSpeed>k__BackingField: 0.05
   <CameraOffset>k__BackingField: {x: 0, y: 7, z: -3}
+  <EnemySpeed>k__BackingField: 5
+  <AllySpeed>k__BackingField: 5
+  <EnemyUnfollowingDelay>k__BackingField: 1

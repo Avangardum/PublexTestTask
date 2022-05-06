@@ -4,9 +4,8 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Start
-  - Ally Spawn
-  - Enemy Spawn
+  - Ally
+  - Enemy
   layers:
   - Default
   - TransparentFX
