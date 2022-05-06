@@ -5,5 +5,7 @@ namespace Avangardum.PublexTestTask
         float EnemySpeed { get; }
         float AllySpeed { get; }
         float EnemyUnfollowingDelay { get; }
+        float EnemyFOV { get; }
+        float AllyFOV { get; }
     }
 }

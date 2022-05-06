@@ -134,6 +134,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ally 2
       objectReference: {fileID: 0}
+    - target: {fileID: 5576467327779711024, guid: d50dc0d9db557de489e0b359b053a6a6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8479022669122257990, guid: d50dc0d9db557de489e0b359b053a6a6, type: 3}
       propertyPath: m_RootOrder
       value: 7
@@ -295,7 +299,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -5481564210835567155, guid: d50dc0d9db557de489e0b359b053a6a6, type: 3}
       propertyPath: <PatrollingRoute>k__BackingField.Array.size
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -5481564210835567155, guid: d50dc0d9db557de489e0b359b053a6a6, type: 3}
       propertyPath: <PatrollingRoute>k__BackingField.Array.data[0]
@@ -991,15 +995,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8479022669122257990, guid: 204d3c4fac687654aafce5632b16a9d7, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8479022669122257990, guid: 204d3c4fac687654aafce5632b16a9d7, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8479022669122257990, guid: 204d3c4fac687654aafce5632b16a9d7, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8479022669122257990, guid: 204d3c4fac687654aafce5632b16a9d7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

@@ -37,6 +37,8 @@ namespace Avangardum.PublexTestTask
         private float _distanceToPlayerWhenBeganFollowing;
         private int _currentWaypointIndex;
         private bool _isPatrollingRouteInverted;
+        private LayerMask _raycastLayerMask = LayerMask.GetMask("Default");
+        private float _filedOfView;
 
         private Vector3 CurrentWaypoint => _patrollingRoute[_currentWaypointIndex];
 
@@ -54,6 +56,12 @@ namespace Avangardum.PublexTestTask
             {
                 NPCType.Ally => config.AllySpeed,
                 NPCType.Enemy => config.EnemySpeed,
+                _ => throw new ArgumentOutOfRangeException(nameof(npcType), npcType, null)
+            };
+            _filedOfView = npcType switch
+            {
+                NPCType.Ally => config.AllyFOV,
+                NPCType.Enemy => config.EnemyFOV,
                 _ => throw new ArgumentOutOfRangeException(nameof(npcType), npcType, null)
             };
 
@@ -89,21 +97,37 @@ namespace Avangardum.PublexTestTask
             }
             
             // Detect if the player is visible
+            var directionFromRaycastOriginToPlayer = _playerGO.transform.position - _raycastOrigin.position;
+            directionFromRaycastOriginToPlayer.y = 0;
             RaycastHit hit;
-            var hitExists = Physics.Raycast(_raycastOrigin.position, _gameObject.transform.forward, out hit);
+            var hitExists = Physics.Raycast(_raycastOrigin.position, directionFromRaycastOriginToPlayer, out hit, Mathf.Infinity, _raycastLayerMask);
             var isPlayerVisible = hitExists && hit.collider.CompareTag(PlayerTag);
+            
+            // If not yet following, there is an extra condition to start following - right orientation of the NPC (looking towards the player)
+            var isLookingAtThePlayer = 
+                Vector3.Angle(_gameObject.transform.forward, _playerGO.transform.position - _gameObject.transform.position) <= _filedOfView / 2;
+            if (_state != State.Following && !isLookingAtThePlayer)
+            {
+                isPlayerVisible = false;
+            }
+
             // If the player is visible and the npc is not following him, start following
             if (isPlayerVisible && _state != State.Following)
             {
                 _state = State.Following;
                 _distanceToPlayerWhenBeganFollowing = Vector3.Distance(_gameObject.transform.position, _playerGO.transform.position);
+                _unfollowingDelayLeft = _config.EnemyUnfollowingDelay;
             }
-            // If the player is not visible and the npc is enemy, reduce the unfollow delay left, then if it is <= 0, set the default state
-            else if (!isPlayerVisible && _state == State.Following)
+            
+            // If the player is not visible, the npc is following him, and the npc is enemy,
+            // reduce the unfollow delay left, then if it is <= 0, stop following and set the default state
+            else if (!isPlayerVisible && _state == State.Following && _npcType == NPCType.Enemy)
             {
                 _unfollowingDelayLeft -= Time.fixedDeltaTime;
                 if (_unfollowingDelayLeft <= 0)
                 {
+                    _unfollowingDelayLeft = 0;
+                    _navMeshAgent.destination = _gameObject.transform.position;
                     SetDefaultState();
                 }
             }
@@ -144,7 +168,7 @@ namespace Avangardum.PublexTestTask
 
         private void ProcessFollowingState()
         {
-            
+            _navMeshAgent.destination = _playerGO.transform.position;
         }
     }
 }

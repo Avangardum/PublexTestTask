@@ -12,5 +12,7 @@ namespace Avangardum.PublexTestTask
         [field: SerializeField] public float EnemySpeed { get; private set;  }
         [field: SerializeField] public float AllySpeed { get; private set;  }
         [field: SerializeField] public float EnemyUnfollowingDelay { get; private set;  }
+        [field: SerializeField] public float EnemyFOV { get; private set;  }
+        [field: SerializeField] public float AllyFOV { get; private set;  }
     }
 }
