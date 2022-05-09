@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Avangardum.PublexTestTask
 {
-    class NpcManager : INPCManager
+    class NpcManager : INpcManager
     {
         private const string PlayerTag = "Player";
         private const string AllyTag = "Ally";
@@ -13,11 +13,14 @@ namespace Avangardum.PublexTestTask
         public event EventHandler<int> TotalAlliesChanged;
         public event EventHandler<int> FollowingAlliesChanged;
         public event EventHandler EnemyReachedPlayer;
+        public event EventHandler<FollowingStatusUpdateArgs> EnemyFollowingStatusUpdate;
+
 
         private IFixedUpdateProvider _fixedUpdateProvider;
         private INPCConfig _config;
-        private List<INPCModel> _allies = new List<INPCModel>();
-        private List<INPCModel> _enemies = new List<INPCModel>();
+        private List<INpcModel> _allies = new List<INpcModel>();
+        private List<INpcModel> _enemies = new List<INpcModel>();
+        private List<INpcModel> _followingAllies = new List<INpcModel>();
         
         public void OnLevelLoaded()
         {
@@ -29,22 +32,48 @@ namespace Avangardum.PublexTestTask
             foreach (var allyGO in allyGOs)
             {
                 var ally = new NpcModel();
-                ally.Initialize(allyGO, playerGO, _fixedUpdateProvider, _config, NPCType.Ally);
+                ally.Initialize(allyGO, playerGO, _fixedUpdateProvider, _config, NpcType.Ally);
                 _allies.Add(ally);
+                ally.FollowingStatusUpdate += OnAllyFollowingStatusUpdate;
             }
+            TotalAlliesChanged?.Invoke(this, _allies.Count);
 
             var enemyGOs = GameObject.FindGameObjectsWithTag(EnemyTag);
             foreach (var enemyGO in enemyGOs)
             {
                 var enemy = new NpcModel();
-                enemy.Initialize(enemyGO, playerGO, _fixedUpdateProvider, _config, NPCType.Enemy);
+                enemy.Initialize(enemyGO, playerGO, _fixedUpdateProvider, _config, NpcType.Enemy);
                 _enemies.Add(enemy);
+                enemy.FollowingStatusUpdate += OnEnemyFollowingStatusUpdate;
+            }
+        }
+
+        private void OnEnemyFollowingStatusUpdate(object sender, FollowingStatusUpdateArgs args)
+        {
+            EnemyFollowingStatusUpdate?.Invoke(this, args);
+        }
+
+        private void OnAllyFollowingStatusUpdate(object sender, FollowingStatusUpdateArgs args)
+        {
+            var ally = (INpcModel) sender;
+            if (args.IsFollowing && !_followingAllies.Contains(ally))
+            {
+                _followingAllies.Add(ally);
+                FollowingAlliesChanged?.Invoke(this, _followingAllies.Count);
             }
         }
 
         private void Cleanup()
         {
+            foreach (var ally in _allies)
+            {
+                ally.FollowingStatusUpdate -= OnAllyFollowingStatusUpdate;
+            }
             _allies.Clear();
+            foreach (var enemy in _enemies)
+            {
+                enemy.FollowingStatusUpdate -= OnEnemyFollowingStatusUpdate;
+            }
             _enemies.Clear();
         }
 

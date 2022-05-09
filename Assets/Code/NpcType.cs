@@ -1,6 +1,6 @@
 namespace Avangardum.PublexTestTask
 {
-    public enum NPCType
+    public enum NpcType
     {
         None = 0,
         Ally = 1,

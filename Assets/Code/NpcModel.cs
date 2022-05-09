@@ -7,10 +7,11 @@ using UnityEngine.Assertions;
 
 namespace Avangardum.PublexTestTask
 {
-    class NpcModel : INPCModel
+    class NpcModel : INpcModel
     {
         private const string PlayerTag = "Player";
         private const float HasReachedWaypointMaxError = 0.01f;
+        private const float TargetDistanceWhenFollowing = 0.8f;
         
         private enum State
         {
@@ -27,10 +28,10 @@ namespace Avangardum.PublexTestTask
         private IFixedUpdateProvider _fixedUpdateProvider;
         private NavMeshAgent _navMeshAgent;
         private State _state;
-        private NPCType _npcType;
+        private NpcType _npcType;
         private Transform _raycastOrigin;
         private List<Vector3> _patrollingRoute;
-        private NPCMB _npcmb;
+        private NpcMb _npcMb;
         private bool _hasPatrollingRoute;
         private INPCConfig _config;
         private float _unfollowingDelayLeft;
@@ -41,8 +42,9 @@ namespace Avangardum.PublexTestTask
         private float _filedOfView;
 
         private Vector3 CurrentWaypoint => _patrollingRoute[_currentWaypointIndex];
+        private float DistanceToPlayer => Vector3.Distance(_gameObject.transform.position, _playerGO.transform.position);
 
-        public void Initialize(GameObject gameObject, GameObject playerGO, IFixedUpdateProvider fixedUpdateProvider, INPCConfig config, NPCType npcType)
+        public void Initialize(GameObject gameObject, GameObject playerGO, IFixedUpdateProvider fixedUpdateProvider, INPCConfig config, NpcType npcType)
         {
             _gameObject = gameObject;
             _playerGO = playerGO;
@@ -54,23 +56,23 @@ namespace Avangardum.PublexTestTask
             Assert.IsNotNull(_navMeshAgent);
             _navMeshAgent.speed = npcType switch
             {
-                NPCType.Ally => config.AllySpeed,
-                NPCType.Enemy => config.EnemySpeed,
+                NpcType.Ally => config.AllySpeed,
+                NpcType.Enemy => config.EnemySpeed,
                 _ => throw new ArgumentOutOfRangeException(nameof(npcType), npcType, null)
             };
             _filedOfView = npcType switch
             {
-                NPCType.Ally => config.AllyFOV,
-                NPCType.Enemy => config.EnemyFOV,
+                NpcType.Ally => config.AllyFOV,
+                NpcType.Enemy => config.EnemyFOV,
                 _ => throw new ArgumentOutOfRangeException(nameof(npcType), npcType, null)
             };
 
             _fixedUpdateProvider.EFixedUpdate += FixedUpdate;
 
-            _npcmb = gameObject.GetComponent<NPCMB>();
-            Assert.IsNotNull(_npcmb);
-            _raycastOrigin = _npcmb.RaycastOrigin;
-            _patrollingRoute = _npcmb.PatrollingRoute.Select(x => x.position).ToList();
+            _npcMb = gameObject.GetComponent<NpcMb>();
+            Assert.IsNotNull(_npcMb);
+            _raycastOrigin = _npcMb.RaycastOrigin;
+            _patrollingRoute = _npcMb.PatrollingRoute.Select(x => x.position).ToList();
             _hasPatrollingRoute = _patrollingRoute.Count >= 2;
         }
 
@@ -115,13 +117,13 @@ namespace Avangardum.PublexTestTask
             if (isPlayerVisible && _state != State.Following)
             {
                 _state = State.Following;
-                _distanceToPlayerWhenBeganFollowing = Vector3.Distance(_gameObject.transform.position, _playerGO.transform.position);
+                _distanceToPlayerWhenBeganFollowing = DistanceToPlayer;
                 _unfollowingDelayLeft = _config.EnemyUnfollowingDelay;
             }
             
             // If the player is not visible, the npc is following him, and the npc is enemy,
             // reduce the unfollow delay left, then if it is <= 0, stop following and set the default state
-            else if (!isPlayerVisible && _state == State.Following && _npcType == NPCType.Enemy)
+            else if (!isPlayerVisible && _state == State.Following && _npcType == NpcType.Enemy)
             {
                 _unfollowingDelayLeft -= Time.fixedDeltaTime;
                 if (_unfollowingDelayLeft <= 0)
@@ -144,6 +146,7 @@ namespace Avangardum.PublexTestTask
                 {
                     _state = State.Idle;
                 }
+                InvokeFollowingStatusUpdate();
             }
         }
         
@@ -169,6 +172,18 @@ namespace Avangardum.PublexTestTask
         private void ProcessFollowingState()
         {
             _navMeshAgent.destination = _playerGO.transform.position;
+            InvokeFollowingStatusUpdate();
+        }
+
+        private void InvokeFollowingStatusUpdate()
+        {
+            FollowingStatusUpdate?.Invoke(this, new FollowingStatusUpdateArgs
+            {
+                CharacterGO = _gameObject,
+                HasReached = false, 
+                IsFollowing = _state == State.Following, 
+                ProgressPercentage = 1 - Mathf.Clamp01((DistanceToPlayer - TargetDistanceWhenFollowing) / _distanceToPlayerWhenBeganFollowing),
+            });
         }
     }
 }
