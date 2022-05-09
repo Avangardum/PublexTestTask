@@ -12,7 +12,8 @@ namespace Avangardum.PublexTestTask
             public IInputManager InputManager;
             public ICameraManager CameraManager;
             public IFloorButtonsAndDoorsManager FloorButtonsAndDoorsManager;
-            public INPCManager NpcManager;
+            public INpcManager NpcManager;
+            public IUserInterface UserInterface;
         }
 
         private Dependencies _dependencies;
@@ -23,6 +24,11 @@ namespace Avangardum.PublexTestTask
 
             _dependencies.LevelLoader.LevelLoaded += OnLevelLoaded;
             _dependencies.InputManager.MovementDirectionChanged += InputManagerOnMovementDirectionChanged;
+
+            _dependencies.NpcManager.FollowingAlliesChanged += OnFollowingAlliesChanged;
+            _dependencies.NpcManager.TotalAlliesChanged += OnTotalAlliesChanged;
+            _dependencies.NpcManager.EnemyReachedPlayer += OnEnemyReachedPlayer;
+            _dependencies.NpcManager.EnemyFollowingStatusUpdate += OnEnemyFollowingStatusUpdate;
         }
 
         private void InputManagerOnMovementDirectionChanged(object sender, Vector3 value)
@@ -36,6 +42,38 @@ namespace Avangardum.PublexTestTask
             _dependencies.CameraManager.OnLevelLoaded();
             _dependencies.FloorButtonsAndDoorsManager.OnLevelLoaded();
             _dependencies.NpcManager.OnLevelLoaded();
+            _dependencies.UserInterface.OnLevelLoaded();
         }
+
+        #region NPC Manager Callbacks
+
+        private void OnFollowingAlliesChanged(object sender, int value)
+        {
+            _dependencies.UserInterface.SetFoundAllies(value);
+        }
+
+        private void OnTotalAlliesChanged(object sender, int value)
+        {
+            _dependencies.UserInterface.SetTotalAllies(value);
+        }
+
+        private void OnEnemyReachedPlayer(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void OnEnemyFollowingStatusUpdate(object sender, FollowingStatusUpdateArgs args)
+        {
+            if (args.IsFollowing)
+            {
+                _dependencies.UserInterface.SetProgressBar(args.CharacterGO ,args.ProgressPercentage);
+            }
+            else
+            {
+                _dependencies.UserInterface.RemoveProgressBar(args.CharacterGO);
+            }
+        }
+
+        #endregion
     }
 }
