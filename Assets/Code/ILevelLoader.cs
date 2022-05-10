@@ -6,5 +6,6 @@ namespace Avangardum.PublexTestTask
     {
         public event EventHandler LevelLoaded;
         public void LoadLevel(string id);
+        public void RestartLevel();
     }
 }

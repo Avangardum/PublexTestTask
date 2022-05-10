@@ -9,7 +9,7 @@ namespace Avangardum.PublexTestTask
         private const string PlayerTag = "Player";
         private const string AllyTag = "Ally";
         private const string EnemyTag = "Enemy";
-        
+
         public event EventHandler<int> TotalAlliesChanged;
         public event EventHandler<int> FollowingAlliesChanged;
         public event EventHandler EnemyReachedPlayer;
@@ -51,6 +51,10 @@ namespace Avangardum.PublexTestTask
         private void OnEnemyFollowingStatusUpdate(object sender, FollowingStatusUpdateArgs args)
         {
             EnemyFollowingStatusUpdate?.Invoke(this, args);
+            if (args.HasReached)
+            {
+                EnemyReachedPlayer?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         private void OnAllyFollowingStatusUpdate(object sender, FollowingStatusUpdateArgs args)
@@ -68,13 +72,17 @@ namespace Avangardum.PublexTestTask
             foreach (var ally in _allies)
             {
                 ally.FollowingStatusUpdate -= OnAllyFollowingStatusUpdate;
+                ally.Cleanup();
             }
             _allies.Clear();
             foreach (var enemy in _enemies)
             {
                 enemy.FollowingStatusUpdate -= OnEnemyFollowingStatusUpdate;
+                enemy.Cleanup();
             }
             _enemies.Clear();
+            _followingAllies.Clear();
+            FollowingAlliesChanged?.Invoke(this, 0);
         }
 
         public void Initialize(IFixedUpdateProvider fixedUpdateProvider, INPCConfig config)

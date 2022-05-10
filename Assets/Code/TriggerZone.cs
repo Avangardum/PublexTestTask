@@ -1,17 +1,14 @@
 using System;
 using UnityEngine;
-// ReSharper disable UnusedAutoPropertyAccessor.Local
 
 namespace Avangardum.PublexTestTask
 {
-    public class FloorButtonMB : MonoBehaviour
+    public class TriggerZone : MonoBehaviour
     {
         private string PlayerTag = "Player";
         
         public event EventHandler PlayerEntered;
         public event EventHandler PlayerLeft;
-        
-        [field: SerializeField] public GameObject ConnectedDoor { get; private set; }
 
         private void OnTriggerEnter(Collider other)
         {

@@ -33,5 +33,10 @@ namespace Avangardum.PublexTestTask
             SceneManager.LoadScene(id);
             _isLoadingLevel = true;
         }
+
+        public void RestartLevel()
+        {
+            LoadLevel(SceneManager.GetActiveScene().name);
+        }
     }
 }

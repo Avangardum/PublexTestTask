@@ -8,5 +8,7 @@ namespace Avangardum.PublexTestTask
         event EventHandler<FollowingStatusUpdateArgs> FollowingStatusUpdate;
         
         void Initialize(GameObject gameObject, GameObject playerGO, IFixedUpdateProvider fixedUpdateProvider, INPCConfig config, NpcType npcType);
+
+        void Cleanup();
     }
 }

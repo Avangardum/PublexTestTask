@@ -9,12 +9,12 @@ namespace Avangardum.PublexTestTask
         public event EventHandler Released;
 
         private GameObject _floorButtonGO;
-        private FloorButtonMB _floorButtonMB;
+        private FloorButtonMb _floorButtonMB;
 
         public void Initialise(GameObject floorButtonGO)
         {
             _floorButtonGO = floorButtonGO;
-            _floorButtonMB = _floorButtonGO.GetComponent<FloorButtonMB>();
+            _floorButtonMB = _floorButtonGO.GetComponent<FloorButtonMb>();
 
             _floorButtonMB.PlayerEntered += OnPlayerEntered;
             _floorButtonMB.PlayerLeft += OnPlayerLeft;

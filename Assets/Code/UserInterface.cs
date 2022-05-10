@@ -25,8 +25,14 @@ namespace Avangardum.PublexTestTask
         {
             _userInterfaceMb = Object.FindObjectOfType<UserInterfaceMb>();
             Assert.IsNotNull(_userInterfaceMb);
+            _userInterfaceMb.RetryButton.onClick.AddListener(OnRetryButtonClick);
         }
-        
+
+        private void OnRetryButtonClick()
+        {
+            RestartClick?.Invoke(this, EventArgs.Empty);
+        }
+
         public void SetFoundAllies(int value)
         {
             _foundAllies = value;
@@ -48,7 +54,7 @@ namespace Avangardum.PublexTestTask
             }
             else
             {
-                progressBar = Object.Instantiate(_userInterfaceMb.FollowingProgressBarPrefab, _userInterfaceMb.transform).GetComponent<ProgressBar>();
+                progressBar = Object.Instantiate(_userInterfaceMb.FollowingProgressBarPrefab, _userInterfaceMb.ProgressBarsParent).GetComponent<ProgressBar>();
                 _followingProgressBars.Add(character, progressBar);
             }
 
@@ -86,6 +92,7 @@ namespace Avangardum.PublexTestTask
             {
                 RemoveProgressBar(character);
             }
+            HideAllWindows();
         }
 
         public void Initialize(IUpdateProvider updateProvider)

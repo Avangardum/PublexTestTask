@@ -11,6 +11,7 @@ namespace Avangardum.PublexTestTask
         [field: SerializeField] public Button RetryButton { get; [UsedImplicitly] private set; }
         [field: SerializeField] public GameObject VictoryWindow { get; [UsedImplicitly] private set; }
         [field: SerializeField] public GameObject DefeatWindow { get; [UsedImplicitly] private set; }
+        [field: SerializeField] public Transform ProgressBarsParent { get; [UsedImplicitly] private set; }
         [field: SerializeField] public GameObject FollowingProgressBarPrefab { get; [UsedImplicitly] private set; }
     }
 }

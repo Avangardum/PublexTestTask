@@ -12,6 +12,7 @@ namespace Avangardum.PublexTestTask
         private const string PlayerTag = "Player";
         private const float HasReachedWaypointMaxError = 0.01f;
         private const float TargetDistanceWhenFollowing = 0.8f;
+        private const float FollowingProgressToReachPlayer = 0.99f;
         
         private enum State
         {
@@ -74,6 +75,11 @@ namespace Avangardum.PublexTestTask
             _raycastOrigin = _npcMb.RaycastOrigin;
             _patrollingRoute = _npcMb.PatrollingRoute.Select(x => x.position).ToList();
             _hasPatrollingRoute = _patrollingRoute.Count >= 2;
+        }
+
+        public void Cleanup()
+        {
+            _fixedUpdateProvider.EFixedUpdate -= FixedUpdate;
         }
 
         private void FixedUpdate(object sender, EventArgs e)
@@ -177,12 +183,13 @@ namespace Avangardum.PublexTestTask
 
         private void InvokeFollowingStatusUpdate()
         {
+            var progressPercentage = 1 - Mathf.Clamp01((DistanceToPlayer - TargetDistanceWhenFollowing) / _distanceToPlayerWhenBeganFollowing);
             FollowingStatusUpdate?.Invoke(this, new FollowingStatusUpdateArgs
             {
                 CharacterGO = _gameObject,
-                HasReached = false, 
+                HasReached = progressPercentage >= FollowingProgressToReachPlayer, 
                 IsFollowing = _state == State.Following, 
-                ProgressPercentage = 1 - Mathf.Clamp01((DistanceToPlayer - TargetDistanceWhenFollowing) / _distanceToPlayerWhenBeganFollowing),
+                ProgressPercentage = progressPercentage,
             });
         }
     }

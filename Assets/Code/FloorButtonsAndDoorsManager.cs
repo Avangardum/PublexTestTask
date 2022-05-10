@@ -13,7 +13,7 @@ namespace Avangardum.PublexTestTask
         {
             Cleanup();
 
-            var buttonMBs = GameObject.FindObjectsOfType<FloorButtonMB>();
+            var buttonMBs = GameObject.FindObjectsOfType<FloorButtonMb>();
             foreach (var buttonMB in buttonMBs)
             {
                 var button = new FloorButtonModel();

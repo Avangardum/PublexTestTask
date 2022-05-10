@@ -22,6 +22,7 @@ namespace Avangardum.PublexTestTask
             npcManager.Initialize(_updateProvider, _config);
             IUserInterface userInterface = new UserInterface();
             userInterface.Initialize(_updateProvider);
+            IGameManager gameManager = new GameManager();
 
             Presenter presenter = new Presenter(new Presenter.Dependencies
             {
@@ -32,6 +33,7 @@ namespace Avangardum.PublexTestTask
                 FloorButtonsAndDoorsManager = floorButtonsAndDoorsManager,
                 NpcManager = npcManager,
                 UserInterface = userInterface,
+                GameManager = gameManager,
             });
             
             levelLoader.LoadLevel("Level 1");
